@@ -12,8 +12,8 @@ interface HomeState {
   error: string | null;
 }
 
-class Home extends Component {
-  state: HomeState = {
+class Home extends Component<object, HomeState> {
+  state = {
     query: localStorage.getItem('searchQuery') || '',
     characters: [],
     loading: false,
@@ -51,11 +51,11 @@ class Home extends Component {
 
   handleQueryChange = (query: string): void => {
     this.setState({ query });
-    localStorage.setItem('searchQuery', query);
   };
 
   handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
+    localStorage.setItem('searchQuery', this.state.query);
     this.fetchCharacters(this.state.query);
   };
 

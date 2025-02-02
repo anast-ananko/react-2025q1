@@ -1,5 +1,6 @@
-import './App.scss';
 import Home from './views/Home';
+
+import './App.scss';
 
 function App() {
   return <Home />;

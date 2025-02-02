@@ -6,7 +6,11 @@ interface TopControlsProps {
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
 }
 
-class TopControls extends Component<TopControlsProps> {
+interface TopControlsState {
+  throwError: boolean;
+}
+
+class TopControls extends Component<TopControlsProps, TopControlsState> {
   state = {
     throwError: false,
   };
