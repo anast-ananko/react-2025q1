@@ -63,14 +63,18 @@ class Home extends Component {
     const { query, characters, loading, error } = this.state;
 
     return (
-      <>
+      <div className="px-4 py-8">
         <TopControls
           query={query}
           onQueryChange={this.handleQueryChange}
           onSubmit={this.handleSubmit}
         />
 
-        {loading && <div>Loading...</div>}
+        {loading && (
+          <div className="flex items-center justify-center w-full h-64">
+            <div className="border-t-4 border-green-500 border-solid w-16 h-16 rounded-full animate-spin"></div>
+          </div>
+        )}
 
         {!loading && error && (
           <div className="flex items-center justify-center h-64 text-red-500 text-lg font-semibold text-center">
@@ -85,7 +89,7 @@ class Home extends Component {
         )}
 
         {!loading && !error && <Results characters={characters} />}
-      </>
+      </div>
     );
   }
 }

@@ -7,13 +7,25 @@ interface TopControlsProps {
 }
 
 class TopControls extends Component<TopControlsProps> {
+  state = {
+    throwError: false,
+  };
+
   handleQuery = (e: React.ChangeEvent<HTMLInputElement>): void => {
     this.props.onQueryChange(e.target.value);
   };
 
+  toggleError = () => {
+    this.setState({ throwError: true });
+  };
+
   render() {
+    if (this.state.throwError) {
+      throw new Error('This is a test error!');
+    }
+
     return (
-      <div className="bg-white p-4 rounded-lg max-w-sm mx-auto">
+      <div className="bg-white px-4 pb-4 rounded-lg max-w-sm mx-auto">
         <form onSubmit={this.props.onSubmit} className="flex space-x-2">
           <div className="flex-1">
             <input
@@ -31,6 +43,15 @@ class TopControls extends Component<TopControlsProps> {
             Search
           </button>
         </form>
+
+        <div className="flex justify-center mt-4">
+          <button
+            onClick={this.toggleError}
+            className="py-2 px-4 bg-red-600 text-white rounded-lg shadow-md hover:bg-red-700 focus:outline-none focus:ring-red-600 text-sm font-semibold transition duration-300 cursor-pointer"
+          >
+            Throw Error
+          </button>
+        </div>
       </div>
     );
   }
