@@ -55,8 +55,9 @@ class Home extends Component<object, HomeState> {
 
   handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
-    localStorage.setItem('searchQuery', this.state.query);
-    this.fetchCharacters(this.state.query);
+    const trimmedQuery = this.state.query.trim();
+    localStorage.setItem('searchQuery', trimmedQuery);
+    this.fetchCharacters(trimmedQuery);
   };
 
   render() {

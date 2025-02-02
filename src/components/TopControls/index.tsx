@@ -19,7 +19,7 @@ class TopControls extends Component<TopControlsProps, TopControlsState> {
     this.props.onQueryChange(e.target.value);
   };
 
-  toggleError = () => {
+  toggleError = (): void => {
     this.setState({ throwError: true });
   };
 
