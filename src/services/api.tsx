@@ -12,6 +12,10 @@ class ApiService {
     try {
       const response = await fetch(url);
 
+      if (response.status === 404) {
+        return [];
+      }
+
       if (!response.ok) {
         throw new Error(`Failed to fetch data: ${response.status}`);
       }
@@ -20,7 +24,6 @@ class ApiService {
 
       return data.results;
     } catch (error) {
-      console.error('Error fetching characters:', error);
       throw error instanceof Error
         ? error
         : new Error('An unknown error occurred while fetching characters');
