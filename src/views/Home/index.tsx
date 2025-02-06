@@ -1,98 +1,84 @@
-import { Component } from 'react';
+import { FC, useEffect, useState } from 'react';
 
-import apiService from '../../services/api';
 import { Character } from '../../types/apiTypes';
-import TopControls from '../../components/TopControls';
-import Results from '../../components/Results';
+import Header from '../../components/Header';
+import CardList from '../../components/CardList';
+import { fetchCharacters } from '../../services/api';
 
-interface HomeState {
-  query: string;
-  characters: Character[];
-  loading: boolean;
-  error: string | null;
-}
+const Home: FC = () => {
+  const [query, setQuery] = useState<string>(
+    localStorage.getItem('searchQuery') || ''
+  );
+  const [characters, setCharacters] = useState<Character[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
 
-class Home extends Component<object, HomeState> {
-  state = {
-    query: localStorage.getItem('searchQuery') || '',
-    characters: [],
-    loading: false,
-    error: null,
-  };
+  useEffect(() => {
+    fetchData(query);
+  }, []);
 
-  componentDidMount() {
-    this.fetchCharacters(this.state.query);
-  }
-
-  componentWillUnmount() {
-    localStorage.setItem('searchQuery', this.state.query);
-  }
-
-  fetchCharacters = async (query: string): Promise<void> => {
-    this.setState({ loading: true, error: null });
+  const fetchData = async (query: string): Promise<void> => {
+    setLoading(true);
+    setError(null);
 
     try {
-      const characters = await apiService.fetchCharacters(query);
+      const characters = await fetchCharacters(query);
 
       if (characters.length === 0) {
-        this.setState({ characters: [], loading: false });
-        return;
+        setCharacters([]);
       }
 
-      this.setState({ characters, loading: false });
+      setCharacters(characters);
+      setLoading(false);
     } catch (error) {
-      this.setState({
-        characters: [],
-        loading: false,
-        error: error instanceof Error ? error.message : 'Something went wrong.',
-      });
+      setCharacters([]);
+      setLoading(false);
+      setError(
+        error instanceof Error ? error.message : 'Something went wrong.'
+      );
     }
   };
 
-  handleQueryChange = (query: string): void => {
-    this.setState({ query });
+  const handleQueryChange = (query: string): void => {
+    setQuery(query);
   };
 
-  handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
-    const trimmedQuery = this.state.query.trim();
+    const trimmedQuery = query.trim();
     localStorage.setItem('searchQuery', trimmedQuery);
-    this.fetchCharacters(trimmedQuery);
+    fetchData(trimmedQuery);
   };
 
-  render() {
-    const { query, characters, loading, error } = this.state;
+  return (
+    <div className="px-4 py-8">
+      <Header
+        query={query}
+        onQueryChange={handleQueryChange}
+        onSubmit={handleSubmit}
+      />
 
-    return (
-      <div className="px-4 py-8">
-        <TopControls
-          query={query}
-          onQueryChange={this.handleQueryChange}
-          onSubmit={this.handleSubmit}
-        />
+      {loading && (
+        <div className="flex items-center justify-center w-full h-64">
+          <div className="border-t-4 border-green-500 border-solid w-16 h-16 rounded-full animate-spin"></div>
+        </div>
+      )}
 
-        {loading && (
-          <div className="flex items-center justify-center w-full h-64">
-            <div className="border-t-4 border-green-500 border-solid w-16 h-16 rounded-full animate-spin"></div>
-          </div>
-        )}
+      {!loading && error && (
+        <div className="flex items-center justify-center h-64 text-red-500 text-lg font-semibold text-center">
+          {error}
+        </div>
+      )}
 
-        {!loading && error && (
-          <div className="flex items-center justify-center h-64 text-red-500 text-lg font-semibold text-center">
-            {error}
-          </div>
-        )}
+      {!loading && !error && characters.length === 0 && (
+        <div className="flex items-center justify-center h-64 text-gray-500 text-lg font-semibold">
+          Not Found
+        </div>
+      )}
 
-        {!loading && !error && characters.length === 0 && (
-          <div className="flex items-center justify-center h-64 text-gray-500 text-lg font-semibold">
-            Not Found
-          </div>
-        )}
-
-        {!loading && !error && <Results characters={characters} />}
-      </div>
-    );
-  }
-}
+      {!loading && !error && <CardList characters={characters} />}
+    </div>
+  );
+};
 
 export default Home;
