@@ -4,11 +4,11 @@ import { Character } from '../../types/apiTypes';
 import Header from '../../components/Header';
 import CardList from '../../components/CardList';
 import { fetchCharacters } from '../../services/api';
+import { useLocalStorage } from '../../hooks/useLocalStorage';
 
 const Home: FC = () => {
-  const [query, setQuery] = useState<string>(
-    localStorage.getItem('searchQuery') || ''
-  );
+  const [query, setQuery] = useLocalStorage('');
+
   const [characters, setCharacters] = useState<Character[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
