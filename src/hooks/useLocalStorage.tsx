@@ -20,8 +20,18 @@ export const useSearchQuery = (): [
   };
 
   const setQueryOnSubmit = (): void => {
-    setSearchParams({ query: inputValue });
-    localStorage.setItem(STORAGE_KEY, inputValue);
+    const currentParams = Object.fromEntries(searchParams.entries());
+    const newParams: Record<string, string> = { ...currentParams, page: '1' };
+
+    if (inputValue.trim()) {
+      newParams.query = inputValue.trim();
+      localStorage.setItem(STORAGE_KEY, inputValue.trim());
+    } else {
+      delete newParams.query;
+      localStorage.removeItem(STORAGE_KEY);
+    }
+
+    setSearchParams(newParams);
   };
 
   useEffect(() => {
