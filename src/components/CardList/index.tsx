@@ -1,7 +1,7 @@
 import { FC } from 'react';
 
 import { Character } from '../../types/apiTypes';
-import CharacterCard from '../Card';
+import Card from '../Card';
 
 interface CardListProps {
   characters: Character[];
@@ -9,9 +9,9 @@ interface CardListProps {
 
 const CardList: FC<CardListProps> = ({ characters }) => {
   return (
-    <div className="grid grid-cols-1 px-8 sm:grid-cols-2 lg:grid-cols-3 gap-x-3 gap-y-8">
+    <div className="grid grid-cols-1 px-8 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-x-3 gap-y-8">
       {characters.map((character) => (
-        <CharacterCard key={character.id} character={character} />
+        <Card key={character.id} character={character} />
       ))}
     </div>
   );

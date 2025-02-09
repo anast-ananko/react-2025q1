@@ -1,4 +1,5 @@
 import { FC } from 'react';
+import { Link, useSearchParams } from 'react-router';
 
 import { Character } from '../../types/apiTypes';
 
@@ -7,24 +8,29 @@ interface CardProps {
 }
 
 const Card: FC<CardProps> = ({ character }) => {
+  const [searchParams] = useSearchParams();
+
+  const updatedSearchParams = new URLSearchParams(searchParams);
+  updatedSearchParams.set('details', character.id.toString());
+
+  const detailsLink = `/details/${character.id}?${updatedSearchParams.toString()}`;
+
   return (
-    <div className="bg-white p-4 border border-green-600 rounded-lg shadow-lg max-w-sm mx-auto">
+    <Link
+      to={detailsLink}
+      className="bg-white p-4 border border-green-600 rounded-lg shadow-lg max-w-sm mx-auto"
+    >
       <img
         src={character.image}
         alt={character.name}
-        className="w-full h-64 object-cover rounded-t-lg"
+        className="w-full h-40 object-contain rounded-t-lg"
       />
       <div className="mt-4">
         <h3 className="text-xl font-semibold text-gray-800">
           {character.name}
         </h3>
-        <p className="text-sm text-gray-700">{`Status: ${character.status}`}</p>
-        <p className="text-sm text-gray-700">{`Species: ${character.species}`}</p>
-        <p className="text-sm text-gray-700">{`Gender: ${character.gender}`}</p>
-        <p className="text-sm text-gray-700">{`Location: ${character.location.name}`}</p>
-        <p className="text-sm text-gray-700">{`Origin: ${character.origin.name}`}</p>
       </div>
-    </div>
+    </Link>
   );
 };
 

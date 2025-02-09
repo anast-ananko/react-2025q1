@@ -1,4 +1,4 @@
-import { ApiResponse } from '../types/apiTypes';
+import { ApiResponse, Character } from '../types/apiTypes';
 
 export async function fetchCharacters(
   query: string = '',
@@ -27,5 +27,23 @@ export async function fetchCharacters(
     throw error instanceof Error
       ? error
       : new Error('An unknown error occurred while fetching characters');
+  }
+}
+
+export async function fetchCharacterDetails(id: string): Promise<Character> {
+  try {
+    const response = await fetch(
+      `https://rickandmortyapi.com/api/character/${id}`
+    );
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch data: ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    throw error instanceof Error
+      ? error
+      : new Error('An unknown error occurred while fetching details');
   }
 }
