@@ -4,6 +4,8 @@ import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { Character } from '../../types/apiTypes';
 import { fetchCharacterDetails } from '../../services/api';
 import { statusStyles } from '../../utils/styles';
+import { updateSearchParams } from '../../utils/updateSearchParams';
+import Spinner from '../Spinner';
 
 const DetailedCard: FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -41,23 +43,14 @@ const DetailedCard: FC = () => {
   }, [id, searchParams, setSearchParams, fetchDetails]);
 
   const handleClose = () => {
-    const currentParams = new URLSearchParams(searchParams);
-    const page = currentParams.get('page') || '1';
-    const query = currentParams.get('query') || '';
-
-    const newUrl = `/?page=${page}${query ? `&query=${query}` : ''}`;
-    navigate(newUrl, { replace: true });
+    updateSearchParams(searchParams, navigate);
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <Spinner />;
   }
 
-  if (!characterDetails) {
-    return <div>Character details not found</div>;
-  }
-
-  return (
+  return characterDetails ? (
     <div className="relative max-w-sm mx-auto bg-white p-6 rounded-lg shadow-xl border border-gray-200">
       <button
         onClick={handleClose}
@@ -86,8 +79,7 @@ const DetailedCard: FC = () => {
         </p>
 
         <p
-          className={`font-semibold 
-          ${
+          className={`font-semibold ${
             characterDetails.gender === 'Female'
               ? 'text-pink-500'
               : characterDetails.gender === 'Male'
@@ -95,8 +87,7 @@ const DetailedCard: FC = () => {
                 : characterDetails.gender === 'Genderless'
                   ? 'text-purple-500'
                   : 'text-gray-500'
-          }
-        `}
+          }`}
         >
           Gender: {characterDetails.gender}
         </p>
@@ -109,7 +100,7 @@ const DetailedCard: FC = () => {
         </p>
       </div>
     </div>
-  );
+  ) : null;
 };
 
 export default DetailedCard;
