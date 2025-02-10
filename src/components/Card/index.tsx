@@ -19,6 +19,7 @@ const Card: FC<CardProps> = ({ character }) => {
     <Link
       to={detailsLink}
       className="card bg-white p-4 border border-green-600 rounded-lg shadow-lg max-w-sm mx-auto"
+      data-testid="card"
     >
       <img
         src={character.image}

@@ -69,14 +69,13 @@ const Home: FC = () => {
           <Await resolve={data}>
             {(resolvedData) => {
               const { results, info } = resolvedData;
-              return results.length === 0 ? (
-                <div className="flex items-center justify-center h-64 text-gray-500 text-lg font-semibold">
-                  Not Found
-                </div>
-              ) : (
+
+              return (
                 <>
                   <CardList characters={results} />
-                  <Paginator hasNext={!!info?.next} hasPrev={!!info?.prev} />
+                  {results.length > 0 && (
+                    <Paginator hasNext={!!info?.next} hasPrev={!!info?.prev} />
+                  )}
                 </>
               );
             }}
