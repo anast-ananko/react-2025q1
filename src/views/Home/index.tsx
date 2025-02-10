@@ -1,98 +1,95 @@
-import { Component } from 'react';
+import { FC, Suspense, useEffect, useRef, useState } from 'react';
+import {
+  Await,
+  Outlet,
+  useLoaderData,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from 'react-router-dom';
 
-import apiService from '../../services/api';
-import { Character } from '../../types/apiTypes';
-import TopControls from '../../components/TopControls';
-import Results from '../../components/Results';
+import { useSearchQuery } from '../../hooks/useLocalStorage';
+import Header from '../../components/Header';
+import CardList from '../../components/CardList';
+import Spinner from '../../components/Spinner';
+import Paginator from '../../components/Paginator';
+import { CharactersLoader } from '../../loaders/charactersLoader';
+import { updateSearchParams } from '../../utils/updateSearchParams';
 
-interface HomeState {
-  query: string;
-  characters: Character[];
-  loading: boolean;
-  error: string | null;
-}
+const Home: FC = () => {
+  const { data } = useLoaderData() as CharactersLoader;
+  const [query, inputValue, setInputValue, setQueryOnSubmit] = useSearchQuery();
+  const { id } = useParams<{ id: string }>();
+  const [isDetailsVisible, setIsDetailsVisible] = useState(!!id);
+  const detailsRef = useRef<HTMLDivElement>(null);
 
-class Home extends Component<object, HomeState> {
-  state = {
-    query: localStorage.getItem('searchQuery') || '',
-    characters: [],
-    loading: false,
-    error: null,
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
+    e.preventDefault();
+
+    const trimmedQuery = inputValue.trim();
+    if (trimmedQuery === query) return;
+
+    setQueryOnSubmit();
   };
 
-  componentDidMount() {
-    this.fetchCharacters(this.state.query);
-  }
+  useEffect(() => {
+    if (id) {
+      setIsDetailsVisible(true);
+    }
+  }, [id]);
 
-  componentWillUnmount() {
-    localStorage.setItem('searchQuery', this.state.query);
-  }
+  const handleClickOutside = (
+    event: React.MouseEvent<HTMLDivElement>
+  ): void => {
+    const target = event.target as HTMLElement;
 
-  fetchCharacters = async (query: string): Promise<void> => {
-    this.setState({ loading: true, error: null });
-
-    try {
-      const characters = await apiService.fetchCharacters(query);
-
-      if (characters.length === 0) {
-        this.setState({ characters: [], loading: false });
-        return;
-      }
-
-      this.setState({ characters, loading: false });
-    } catch (error) {
-      this.setState({
-        characters: [],
-        loading: false,
-        error: error instanceof Error ? error.message : 'Something went wrong.',
-      });
+    if (
+      detailsRef.current &&
+      target &&
+      !detailsRef.current.contains(target) &&
+      !target.closest('.card')
+    ) {
+      setIsDetailsVisible(false);
+      updateSearchParams(searchParams, navigate);
     }
   };
 
-  handleQueryChange = (query: string): void => {
-    this.setState({ query });
-  };
-
-  handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
-    e.preventDefault();
-    const trimmedQuery = this.state.query.trim();
-    localStorage.setItem('searchQuery', trimmedQuery);
-    this.fetchCharacters(trimmedQuery);
-  };
-
-  render() {
-    const { query, characters, loading, error } = this.state;
-
-    return (
-      <div className="px-4 py-8">
-        <TopControls
-          query={query}
-          onQueryChange={this.handleQueryChange}
-          onSubmit={this.handleSubmit}
+  return (
+    <div className="flex" onClick={handleClickOutside}>
+      <div className="w-2/3 px-4 py-8">
+        <Header
+          query={inputValue}
+          onQueryChange={setInputValue}
+          onSubmit={handleSubmit}
         />
+        <Suspense fallback={<Spinner />}>
+          <Await resolve={data}>
+            {(resolvedData) => {
+              const { results, info } = resolvedData;
 
-        {loading && (
-          <div className="flex items-center justify-center w-full h-64">
-            <div className="border-t-4 border-green-500 border-solid w-16 h-16 rounded-full animate-spin"></div>
-          </div>
-        )}
-
-        {!loading && error && (
-          <div className="flex items-center justify-center h-64 text-red-500 text-lg font-semibold text-center">
-            {error}
-          </div>
-        )}
-
-        {!loading && !error && characters.length === 0 && (
-          <div className="flex items-center justify-center h-64 text-gray-500 text-lg font-semibold">
-            Not Found
-          </div>
-        )}
-
-        {!loading && !error && <Results characters={characters} />}
+              return (
+                <>
+                  <CardList characters={results} />
+                  {results.length > 0 && (
+                    <Paginator hasNext={!!info?.next} hasPrev={!!info?.prev} />
+                  )}
+                </>
+              );
+            }}
+          </Await>
+        </Suspense>
       </div>
-    );
-  }
-}
+
+      {isDetailsVisible && (
+        <div ref={detailsRef} className="w-1/3 border-l">
+          <Outlet />
+        </div>
+      )}
+    </div>
+  );
+};
 
 export default Home;
