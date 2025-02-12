@@ -1,38 +1,63 @@
-import { FC, Suspense, useEffect, useRef, useState } from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
 import {
-  Await,
   Outlet,
-  useLoaderData,
   useNavigate,
   useParams,
   useSearchParams,
 } from 'react-router-dom';
 
-import { useSearchQuery } from '../../hooks/useLocalStorage';
-import Header from '../../components/Header';
 import CardList from '../../components/CardList';
 import Spinner from '../../components/Spinner';
 import Paginator from '../../components/Paginator';
-import { CharactersLoader } from '../../loaders/charactersLoader';
+import Search from '../../components/Search';
 import { updateSearchParams } from '../../utils/updateSearchParams';
+import { useGetAllCharactersQuery } from '../../store/services/rickandmortyApi';
+import { useAppDispatch, useAppSelector } from '../../hooks/hook';
+import { setPage, setQuery } from '../../store/features/uiStateSlice';
 
 const Home: FC = () => {
-  const { data } = useLoaderData() as CharactersLoader;
-  const [query, inputValue, setInputValue, setQueryOnSubmit] = useSearchQuery();
+  const dispatch = useAppDispatch();
+  const { page, query: query } = useAppSelector((store) => store.uiState);
+  const {
+    data = { characters: [], pagesNumber: 0, next: null, prev: null },
+    isSuccess,
+    isLoading,
+    isFetching,
+    isError,
+  } = useGetAllCharactersQuery(
+    { page, name: query },
+    { refetchOnMountOrArgChange: true }
+  );
+  const { characters, pagesNumber, next, prev } = data;
+
   const { id } = useParams<{ id: string }>();
   const [isDetailsVisible, setIsDetailsVisible] = useState(!!id);
   const detailsRef = useRef<HTMLDivElement>(null);
 
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
+
+  const [searchQuery, setSearchQuery] = useState<string>(query);
+
+  const handleInput = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    setSearchQuery(event.target.value);
+  };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
 
-    const trimmedQuery = inputValue.trim();
-    if (trimmedQuery === query) return;
+    const updatedSearchParams = new URLSearchParams(searchParams);
+    updatedSearchParams.set('page', '1');
+    updatedSearchParams.set('query', searchQuery.trim());
 
-    setQueryOnSubmit();
+    if (!searchQuery.trim()) {
+      updatedSearchParams.delete('query');
+    }
+
+    setSearchParams(updatedSearchParams);
+
+    dispatch(setQuery(searchQuery));
+    dispatch(setPage(page));
   };
 
   useEffect(() => {
@@ -60,27 +85,31 @@ const Home: FC = () => {
   return (
     <div className="flex" onClick={handleClickOutside}>
       <div className="w-2/3 px-4 py-8">
-        <Header
-          query={inputValue}
-          onQueryChange={setInputValue}
+        <Search
+          searchQuery={searchQuery}
+          onChangeQuery={handleInput}
           onSubmit={handleSubmit}
         />
-        <Suspense fallback={<Spinner />}>
-          <Await resolve={data}>
-            {(resolvedData) => {
-              const { results, info } = resolvedData;
 
-              return (
-                <>
-                  <CardList characters={results} />
-                  {results.length > 0 && (
-                    <Paginator hasNext={!!info?.next} hasPrev={!!info?.prev} />
-                  )}
-                </>
-              );
-            }}
-          </Await>
-        </Suspense>
+        {isError && <div>Error</div>}
+
+        {characters.length > 0 && (
+          <Paginator
+            pagesNumber={pagesNumber}
+            hasNext={!!next}
+            hasPrev={!!prev}
+          />
+        )}
+
+        {(isLoading || isFetching) && (
+          <div>
+            <Spinner />
+          </div>
+        )}
+
+        {isSuccess && !isLoading && !isFetching && (
+          <CardList characters={characters} />
+        )}
       </div>
 
       {isDetailsVisible && (
