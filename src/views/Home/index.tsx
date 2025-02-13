@@ -17,7 +17,7 @@ import { setPage, setQuery } from '../../store/features/uiStateSlice';
 
 const Home: FC = () => {
   const dispatch = useAppDispatch();
-  const { page, query: query } = useAppSelector((store) => store.uiState);
+  const { page, query } = useAppSelector((store) => store.uiState);
   const {
     data = { characters: [], pagesNumber: 0, next: null, prev: null },
     isSuccess,
@@ -57,7 +57,7 @@ const Home: FC = () => {
     setSearchParams(updatedSearchParams);
 
     dispatch(setQuery(searchQuery));
-    dispatch(setPage(page));
+    dispatch(setPage(1));
   };
 
   useEffect(() => {
@@ -113,7 +113,7 @@ const Home: FC = () => {
       </div>
 
       {isDetailsVisible && (
-        <div ref={detailsRef} className="w-1/3 border-l">
+        <div ref={detailsRef} className="sm:w-[100px] md:w-1/2 lg:w-1/3">
           <Outlet />
         </div>
       )}

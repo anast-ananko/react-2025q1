@@ -1,23 +1,16 @@
 import { FC } from 'react';
-import { Link, useSearchParams } from 'react-router';
 
 import { Character } from '../../types/apiTypes';
+import LinkWithQuery from '../../hok/linkWithQuery';
 
 interface CardProps {
   character: Character;
 }
 
 const Card: FC<CardProps> = ({ character }) => {
-  const [searchParams] = useSearchParams();
-
-  const updatedSearchParams = new URLSearchParams(searchParams);
-  updatedSearchParams.set('details', character.id.toString());
-
-  const detailsLink = `/details/${character.id}?${updatedSearchParams.toString()}`;
-
   return (
-    <Link
-      to={detailsLink}
+    <LinkWithQuery
+      to={`/details/${character.id}`}
       className="card bg-white p-4 border border-green-600 rounded-lg shadow-lg max-w-sm mx-auto"
       data-testid="card"
     >
@@ -31,7 +24,7 @@ const Card: FC<CardProps> = ({ character }) => {
           {character.name}
         </h3>
       </div>
-    </Link>
+    </LinkWithQuery>
   );
 };
 

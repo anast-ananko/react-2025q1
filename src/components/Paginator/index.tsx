@@ -29,16 +29,16 @@ const Paginator: FC<PaginatorProps> = ({ pagesNumber, hasNext, hasPrev }) => {
       <button
         disabled={!hasPrev}
         onClick={() => handlePageChange(currentPage - 1)}
-        className={`py-2 px-4 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors duration-200 ${!hasPrev ? 'disabled:bg-gray-400 cursor-not-allowed' : 'cursor-pointer'}`}
+        className={`py-2 sm:px-2 md:px-4 bg-green-600 text-white text-xl rounded-lg hover:bg-green-800 transition-colors duration-200 ${!hasPrev ? 'disabled:bg-gray-400 cursor-not-allowed' : 'cursor-pointer'}`}
       >
         Previous
       </button>
       <div className="flex items-center space-x-2">
-        <span className="py-2 px-4 text-black rounded-lg font-semibold text-xl">
+        <span className="py-2 sm:px-2 md:px-4 text-black rounded-lg font-semibold text-xl">
           {currentPage}
         </span>
         <span className="text-gray-600 text-xl">/</span>
-        <span className="py-2 px-4 text-black rounded-lg font-semibold text-xl">
+        <span className="py-2 sm:px-2 md:px-4 text-black rounded-lg font-semibold text-xl">
           {pagesNumber}
         </span>
       </div>
@@ -46,7 +46,7 @@ const Paginator: FC<PaginatorProps> = ({ pagesNumber, hasNext, hasPrev }) => {
       <button
         disabled={!hasNext}
         onClick={() => handlePageChange(currentPage + 1)}
-        className={`py-2 px-4 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors duration-200 ${!hasNext ? 'disabled:bg-gray-400 cursor-not-allowed' : 'cursor-pointer'}`}
+        className={`py-2 sm:px-2 md:px-4 bg-green-600 text-white text-xl rounded-lg hover:bg-green-800 transition-colors duration-200 ${!hasNext ? 'disabled:bg-gray-400 cursor-not-allowed' : 'cursor-pointer'}`}
       >
         Next
       </button>
