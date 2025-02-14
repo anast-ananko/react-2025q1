@@ -5,14 +5,14 @@ interface UiState {
   query: string;
 }
 
-const initialUiState: UiState = {
+const initialState: UiState = {
   page: 1,
   query: '',
 };
 
 const uiStateSlice = createSlice({
   name: 'ui',
-  initialState: initialUiState,
+  initialState: initialState,
   reducers: {
     setQuery(state, action: PayloadAction<string>) {
       state.query = action.payload;
