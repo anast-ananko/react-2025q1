@@ -10,6 +10,7 @@ import CardList from '../../components/CardList';
 import Spinner from '../../components/Spinner';
 import Paginator from '../../components/Paginator';
 import Search from '../../components/Search';
+import Popup from '../../components/Popup';
 import { updateSearchParams } from '../../utils/updateSearchParams';
 import { useGetAllCharactersQuery } from '../../store/services/rickandmortyApi';
 import { useAppDispatch, useAppSelector } from '../../hooks/hook';
@@ -18,6 +19,7 @@ import { setPage, setQuery } from '../../store/features/uiStateSlice';
 const Home: FC = () => {
   const dispatch = useAppDispatch();
   const { page, query } = useAppSelector((store) => store.uiState);
+
   const {
     data = { characters: [], pagesNumber: 0, next: null, prev: null },
     isSuccess,
@@ -84,7 +86,7 @@ const Home: FC = () => {
 
   return (
     <div className="flex" onClick={handleClickOutside}>
-      <div className="w-2/3 px-4 py-8">
+      <div className="w-2/3 px-4 py-8 mb-10">
         <Search
           searchQuery={searchQuery}
           onChangeQuery={handleInput}
@@ -117,6 +119,8 @@ const Home: FC = () => {
           <Outlet />
         </div>
       )}
+
+      <Popup />
     </div>
   );
 };
