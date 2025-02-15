@@ -18,7 +18,7 @@ const DetailedCard: FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const handleClose = () => {
+  const handleClose = (): void => {
     navigate(`/${location.search}`);
   };
 

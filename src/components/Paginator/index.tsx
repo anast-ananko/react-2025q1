@@ -14,12 +14,14 @@ const Paginator: FC<PaginatorProps> = ({ pagesNumber, hasNext, hasPrev }) => {
   const dispatch = useAppDispatch();
   const { page: currentPage } = useAppSelector((store) => store.uiState);
 
-  const [searchParams, setSearchParams] = useSearchParams();
+  const setSearchParams = useSearchParams()[1];
 
   const handlePageChange = (newPage: number) => {
-    const updatedSearchParams = new URLSearchParams(searchParams);
-    updatedSearchParams.set('page', newPage.toString());
-    setSearchParams(updatedSearchParams);
+    setSearchParams((prev) => {
+      const params = new URLSearchParams(prev);
+      params.set('page', newPage.toString());
+      return params;
+    });
 
     dispatch(setPage(newPage));
   };

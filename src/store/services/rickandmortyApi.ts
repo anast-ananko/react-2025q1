@@ -11,7 +11,6 @@ interface CharacterQueryParams {
 export const rickandmortyApi = createApi({
   reducerPath: 'rickandmortyApi',
   baseQuery: fetchBaseQuery({ baseUrl: API_BASE_URL }),
-  refetchOnMountOrArgChange: 30,
   endpoints: (builder) => ({
     getAllCharacters: builder.query<
       {

@@ -26,10 +26,7 @@ const Home: FC = () => {
     isLoading,
     isFetching,
     isError,
-  } = useGetAllCharactersQuery(
-    { page, name: query },
-    { refetchOnMountOrArgChange: true }
-  );
+  } = useGetAllCharactersQuery({ page, name: query });
   const { characters, pagesNumber, next, prev } = data;
 
   const { id } = useParams<{ id: string }>();
@@ -48,15 +45,18 @@ const Home: FC = () => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
 
-    const updatedSearchParams = new URLSearchParams(searchParams);
-    updatedSearchParams.set('page', '1');
-    updatedSearchParams.set('query', searchQuery.trim());
+    setSearchParams((prev) => {
+      const params = new URLSearchParams(prev);
+      params.set('page', '1');
 
-    if (!searchQuery.trim()) {
-      updatedSearchParams.delete('query');
-    }
+      if (searchQuery.trim()) {
+        params.set('query', searchQuery.trim());
+      } else {
+        params.delete('query');
+      }
 
-    setSearchParams(updatedSearchParams);
+      return params;
+    });
 
     dispatch(setQuery(searchQuery));
     dispatch(setPage(1));

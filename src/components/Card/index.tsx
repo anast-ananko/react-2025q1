@@ -1,7 +1,7 @@
 import { FC } from 'react';
 
 import { Character } from '../../types/apiTypes';
-import LinkWithQuery from '../../hok/linkWithQuery';
+import LinkWithQuery from '../../hoc/linkWithQuery';
 import { useAppDispatch, useAppSelector } from '../../hooks/hook';
 import { toggleSelected } from '../../store/features/selectedItemsSlice';
 
@@ -17,8 +17,7 @@ const Card: FC<CardProps> = ({ character }) => {
 
   const isSelected = selectedCharacterIds.includes(character.id);
 
-  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.stopPropagation();
+  const handleCheckboxChange = (): void => {
     dispatch(toggleSelected(character.id));
   };
 
