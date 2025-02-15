@@ -1,7 +1,8 @@
 import { FC } from 'react';
 
-import { useAppDispatch, useAppSelector } from '../../hooks/hook';
 import { resetSelected } from '../../store/features/selectedItemsSlice';
+import { useAppDispatch, useAppSelector } from '../../hooks/hook';
+import { downloadCsv } from '../../utils/downloadCsv';
 
 const Popup: FC = () => {
   const dispatch = useAppDispatch();
@@ -9,7 +10,7 @@ const Popup: FC = () => {
     (store) => store.selectedItems
   );
 
-  const handleUnselectAll = () => {
+  const handleUnselectAll = (): void => {
     dispatch(resetSelected());
   };
 
@@ -27,7 +28,10 @@ const Popup: FC = () => {
             >
               Unselect all
             </button>
-            <button className="bg-blue-500 text-xl px-4 py-2 rounded-lg">
+            <button
+              className="bg-blue-500 text-xl px-4 py-2 rounded-lg"
+              onClick={() => downloadCsv(selectedCharacterIds)}
+            >
               Download
             </button>
           </div>
