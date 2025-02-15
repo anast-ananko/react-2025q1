@@ -9,16 +9,17 @@ import Popup from '../../components/Popup';
 import { useGetAllCharactersQuery } from '../../store/services/rickandmortyApi';
 import { useAppDispatch, useAppSelector } from '../../hooks/hook';
 import { setPage, setQuery } from '../../store/features/uiStateSlice';
+import { resetSelected } from '../../store/features/selectedItemsSlice';
 
 const Home: FC = () => {
   const dispatch = useAppDispatch();
   const { page, query } = useAppSelector((store) => store.uiState);
   const {
     data = { characters: [], pagesNumber: 0, next: null, prev: null },
+    error,
     isSuccess,
     isLoading,
     isFetching,
-    isError,
   } = useGetAllCharactersQuery({ page, name: query });
   const { characters, pagesNumber, next, prev } = data;
 
@@ -48,6 +49,7 @@ const Home: FC = () => {
 
     dispatch(setQuery(searchQuery));
     dispatch(setPage(1));
+    dispatch(resetSelected());
   };
 
   return (
@@ -59,9 +61,18 @@ const Home: FC = () => {
           onSubmit={handleSubmit}
         />
 
-        {isError && <div>Error</div>}
+        <>
+          {error && 'status' in error && error.status === 404 && (
+            <div className="mt-16 text-xl font-bold text-center">Not found</div>
+          )}
+          {error && !('status' in error) && (
+            <div className="mt-16 text-xl font-semibold text-center">
+              {error?.message}
+            </div>
+          )}
+        </>
 
-        {characters.length > 0 && (
+        {!error && !isLoading && !isFetching && (
           <Paginator
             pagesNumber={pagesNumber}
             hasNext={!!next}
