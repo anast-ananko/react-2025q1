@@ -1,12 +1,19 @@
-import { FC } from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { FC, useRef } from 'react';
+import {
+  useLocation,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from 'react-router-dom';
+import { useOnClickOutside } from 'usehooks-ts';
 
-import { statusStyles } from '../../utils/styles';
 import Spinner from '../Spinner';
+import { statusStyles } from '../../utils/styles';
 import { useGetCharacterQuery } from '../../store/services/rickandmortyApi';
 
 const DetailedCard: FC = () => {
   const { id } = useParams<{ id: string }>();
+
   const {
     data: character,
     isSuccess,
@@ -15,6 +22,10 @@ const DetailedCard: FC = () => {
     isError,
   } = useGetCharacterQuery(Number(id));
 
+  const detailsRef = useRef(null);
+
+  const [searchParams] = useSearchParams();
+
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -22,8 +33,21 @@ const DetailedCard: FC = () => {
     navigate(`/${location.search}`);
   };
 
-  return (
-    <div className="sticky top-10 right-0 bg-white p-6 rounded-lg shadow-xl border border-green-600 sm:w-[200px] md:w-80 h-fit z-50">
+  const handleClickOutside = (): void => {
+    const params = new URLSearchParams(searchParams);
+    navigate(
+      `/?page=${params.get('page') || '1'}${params.has('query') ? `&query=${params.get('query')}` : ''}`,
+      { replace: true }
+    );
+  };
+
+  useOnClickOutside(detailsRef, handleClickOutside);
+
+  return id ? (
+    <div
+      ref={detailsRef}
+      className="sticky top-10 right-0 bg-white p-6 rounded-lg shadow-xl border border-green-600 sm:w-[200px] md:w-80 h-fit z-50"
+    >
       {(isLoading || isFetching) && <Spinner />}
 
       {isError && <div>Error</div>}
@@ -56,15 +80,7 @@ const DetailedCard: FC = () => {
               Species: {character.species}
             </p>
             <p
-              className={`font-semibold ${
-                character.gender === 'Female'
-                  ? 'text-pink-500'
-                  : character.gender === 'Male'
-                    ? 'text-blue-500'
-                    : character.gender === 'Genderless'
-                      ? 'text-purple-500'
-                      : 'text-gray-500'
-              }`}
+              className={`font-semibold ${character.gender === 'Female' ? 'text-pink-500' : character.gender === 'Male' ? 'text-blue-500' : character.gender === 'Genderless' ? 'text-purple-500' : 'text-gray-500'}`}
             >
               Gender: {character.gender}
             </p>
@@ -78,7 +94,7 @@ const DetailedCard: FC = () => {
         </>
       )}
     </div>
-  );
+  ) : null;
 };
 
 export default DetailedCard;
