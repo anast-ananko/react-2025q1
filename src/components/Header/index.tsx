@@ -1,24 +1,14 @@
 import { FC } from 'react';
 
+import { Search } from '../../components';
 import { useTheme } from '../../context/useTheme';
-import Search from '../Search';
 
-interface SearchProps {
-  searchQuery: string;
-  onChangeQuery: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
-}
-
-const Header: FC<SearchProps> = ({ searchQuery, onChangeQuery, onSubmit }) => {
+const Header: FC = () => {
   const { theme, toggleTheme } = useTheme();
 
   return (
-    <div className="bg-white dark:bg-gray-800 px-4 pb-4 rounded-lg max-w-lg mx-auto flex items-center justify-between space-x-4">
-      <Search
-        searchQuery={searchQuery}
-        onChangeQuery={onChangeQuery}
-        onSubmit={onSubmit}
-      />
+    <div className="px-4 pb-4 rounded-lg max-w-lg mx-auto flex items-center justify-between space-x-4">
+      <Search />
 
       <button
         onClick={toggleTheme}

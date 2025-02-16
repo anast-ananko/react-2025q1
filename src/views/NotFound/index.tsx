@@ -9,7 +9,7 @@ const NotFound: FC = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center text-xl font-semibold text-gray-500">
+    <div className="flex flex-col pt-20 items-center justify-center text-xl font-semibold text-gray-500">
       <p>Not Found</p>
       <button
         onClick={handleGoHome}

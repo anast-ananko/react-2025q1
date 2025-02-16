@@ -1,18 +1,11 @@
-import { FC, useState } from 'react';
-import { Outlet, useSearchParams } from 'react-router-dom';
+import { FC } from 'react';
+import { Outlet } from 'react-router-dom';
 
-import CardList from '../../components/CardList';
-import Spinner from '../../components/Spinner';
-import Paginator from '../../components/Paginator';
-import Header from '../../components/Header';
-import Popup from '../../components/Popup';
+import { CardList, Header, Paginator, Popup, Spinner } from '../../components';
 import { useGetAllCharactersQuery } from '../../store/services/rickandmortyApi';
-import { useAppDispatch, useAppSelector } from '../../hooks/hook';
-import { setPage, setQuery } from '../../store/features/uiStateSlice';
-import { resetSelected } from '../../store/features/selectedItemsSlice';
+import { useAppSelector } from '../../hooks/hook';
 
 const Home: FC = () => {
-  const dispatch = useAppDispatch();
   const { page, query } = useAppSelector((store) => store.uiState);
   const {
     data = { characters: [], pagesNumber: 0, next: null, prev: null },
@@ -23,50 +16,19 @@ const Home: FC = () => {
   } = useGetAllCharactersQuery({ page, name: query });
   const { characters, pagesNumber, next, prev } = data;
 
-  const [searchQuery, setSearchQuery] = useState<string>(query);
-
-  const setSearchParams = useSearchParams()[1];
-
-  const handleInput = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setSearchQuery(event.target.value);
-  };
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
-    e.preventDefault();
-
-    setSearchParams((prev) => {
-      const params = new URLSearchParams(prev);
-      params.set('page', '1');
-
-      if (searchQuery.trim()) {
-        params.set('query', searchQuery.trim());
-      } else {
-        params.delete('query');
-      }
-
-      return params;
-    });
-
-    dispatch(setQuery(searchQuery));
-    dispatch(setPage(1));
-    dispatch(resetSelected());
-  };
-
   return (
     <div className="flex">
       <div className="w-2/3 px-4 py-8 mb-10">
-        <Header
-          searchQuery={searchQuery}
-          onChangeQuery={handleInput}
-          onSubmit={handleSubmit}
-        />
+        <Header />
 
         <>
           {error && 'status' in error && error.status === 404 && (
-            <div className="mt-16 text-xl font-bold text-center">Not found</div>
+            <div className="mt-16 text-xl dark:text-white font-bold text-center">
+              Not found
+            </div>
           )}
           {error && !('status' in error) && (
-            <div className="mt-16 text-xl font-semibold text-center">
+            <div className="mt-16 text-xl dark:text-white font-semibold text-center">
               {error?.message}
             </div>
           )}

@@ -7,7 +7,7 @@ import {
 } from 'react-router-dom';
 import { useOnClickOutside } from 'usehooks-ts';
 
-import Spinner from '../Spinner';
+import { Spinner } from '../../components';
 import { statusStyles } from '../../utils/styles';
 import { useGetCharacterQuery } from '../../store/services/rickandmortyApi';
 

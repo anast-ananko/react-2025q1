@@ -1,12 +1,43 @@
-import { FC } from 'react';
+import { FC, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 
-interface SearchProps {
-  searchQuery: string;
-  onChangeQuery: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
-}
+import { setPage, setQuery } from '../../store/features/uiStateSlice';
+import { resetSelected } from '../../store/features/selectedItemsSlice';
+import { useAppDispatch, useAppSelector } from '../../hooks/hook';
 
-const Search: FC<SearchProps> = ({ searchQuery, onChangeQuery, onSubmit }) => {
+const Search: FC = () => {
+  const dispatch = useAppDispatch();
+  const { query } = useAppSelector((store) => store.uiState);
+
+  const [searchQuery, setSearchQuery] = useState<string>(query);
+
+  const setSearchParams = useSearchParams()[1];
+
+  const onSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
+    e.preventDefault();
+
+    setSearchParams((prev) => {
+      const params = new URLSearchParams(prev);
+      params.set('page', '1');
+
+      if (searchQuery.trim()) {
+        params.set('query', searchQuery.trim());
+      } else {
+        params.delete('query');
+      }
+
+      return params;
+    });
+
+    dispatch(setQuery(searchQuery));
+    dispatch(setPage(1));
+    dispatch(resetSelected());
+  };
+
+  const onChangeQuery = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    setSearchQuery(event.target.value);
+  };
+
   return (
     <form onSubmit={onSubmit} className="flex space-x-2">
       <div className="flex-1">
