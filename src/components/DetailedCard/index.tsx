@@ -46,7 +46,7 @@ const DetailedCard: FC = () => {
   return id ? (
     <div
       ref={detailsRef}
-      className="sticky top-10 right-0 bg-white p-6 rounded-lg shadow-xl border border-green-600 sm:w-[200px] md:w-80 h-fit z-50"
+      className="sticky top-10 right-0 bg-white dark:bg-gray-700 p-6 rounded-lg shadow-xl border border-green-600 sm:w-[200px] md:w-80 h-fit z-50"
     >
       {(isLoading || isFetching) && <Spinner />}
 
@@ -76,7 +76,7 @@ const DetailedCard: FC = () => {
             <p className={`font-semibold ${statusStyles[character.status]}`}>
               Status: {character.status}
             </p>
-            <p className="font-semibold text-gray-700">
+            <p className="font-semibold text-gray-700 dark:text-gray-100">
               Species: {character.species}
             </p>
             <p
@@ -84,10 +84,10 @@ const DetailedCard: FC = () => {
             >
               Gender: {character.gender}
             </p>
-            <p className="font-semibold text-gray-700">
+            <p className="font-semibold text-gray-700 dark:text-gray-100">
               Origin: {character.origin.name}
             </p>
-            <p className="font-semibold text-gray-700">
+            <p className="font-semibold text-gray-700 dark:text-gray-100">
               Location: {character.location.name}
             </p>
           </div>

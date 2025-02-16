@@ -5,7 +5,7 @@ import ErrorBoundary from '../ErrorBoundary';
 const Layout: FC = () => {
   return (
     <ErrorBoundary>
-      <div className="px-4 py-8">
+      <div className="px-4 py-8 bg-white dark:bg-gray-800">
         <Outlet />
       </div>
     </ErrorBoundary>

@@ -23,7 +23,7 @@ const Card: FC<CardProps> = ({ character }) => {
 
   return (
     <div
-      className="card bg-white p-4 border border-green-600 rounded-lg shadow-lg max-w-sm mx-auto"
+      className="card bg-white dark:bg-gray-700 p-4 border border-green-600 rounded-lg shadow-lg max-w-sm mx-auto"
       data-testid="card"
     >
       <div className="flex items-center">
@@ -48,7 +48,7 @@ const Card: FC<CardProps> = ({ character }) => {
       <div className="mt-4 text-center">
         <LinkWithQuery
           to={`/details/${character.id}`}
-          className="inline-block px-4 py-2 bg-green-600 text-white text-xl rounded-lg hover:bg-green-800 transition"
+          className="inline-block px-4 py-2 bg-green-600 text-white dark:text-gray-800 text-xl rounded-lg hover:bg-green-800 transition"
         >
           More
         </LinkWithQuery>

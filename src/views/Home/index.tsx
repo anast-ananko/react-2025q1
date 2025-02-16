@@ -4,7 +4,7 @@ import { Outlet, useSearchParams } from 'react-router-dom';
 import CardList from '../../components/CardList';
 import Spinner from '../../components/Spinner';
 import Paginator from '../../components/Paginator';
-import Search from '../../components/Search';
+import Header from '../../components/Header';
 import Popup from '../../components/Popup';
 import { useGetAllCharactersQuery } from '../../store/services/rickandmortyApi';
 import { useAppDispatch, useAppSelector } from '../../hooks/hook';
@@ -55,7 +55,7 @@ const Home: FC = () => {
   return (
     <div className="flex">
       <div className="w-2/3 px-4 py-8 mb-10">
-        <Search
+        <Header
           searchQuery={searchQuery}
           onChangeQuery={handleInput}
           onSubmit={handleSubmit}
