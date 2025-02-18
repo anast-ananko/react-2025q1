@@ -1,12 +1,15 @@
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 
 import { CardList, Header, Paginator, Popup, Spinner } from '../../components';
 import { useGetAllCharactersQuery } from '../../store/services/rickandmortyApi';
-import { useAppSelector } from '../../hooks/hook';
+import { useAppDispatch, useAppSelector } from '../../hooks/hook';
+import { setCurrentCards } from '../../store/features/currentCardsSlice';
 
 const Home: FC = () => {
+  const dispatch = useAppDispatch();
   const { page, query } = useAppSelector((store) => store.uiState);
+
   const {
     data = { characters: [], pagesNumber: 0, next: null, prev: null },
     error,
@@ -15,6 +18,10 @@ const Home: FC = () => {
     isFetching,
   } = useGetAllCharactersQuery({ page, name: query });
   const { characters, pagesNumber, next, prev } = data;
+
+  useEffect(() => {
+    dispatch(setCurrentCards(characters));
+  }, [characters, dispatch]);
 
   return (
     <div className="flex">
@@ -48,9 +55,7 @@ const Home: FC = () => {
           </div>
         )}
 
-        {isSuccess && !isLoading && !isFetching && (
-          <CardList characters={characters} />
-        )}
+        {isSuccess && !isLoading && !isFetching && <CardList />}
       </div>
 
       <div className="sm:w-[100px] md:w-1/2 lg:w-1/3">
