@@ -4,7 +4,7 @@ import { persistReducer, persistStore } from 'redux-persist';
 
 import { rickandmortyApi } from './services/rickandmortyApi';
 import uiStateSlice from './features/uiStateSlice';
-import selectedItemsReducer from './features/selectedItemsSlice';
+import selectedCardsReducer from './features/selectedCardsSlice';
 
 const uiStatePersistConfig = {
   key: 'uiState',
@@ -20,7 +20,7 @@ export const store = configureStore({
   reducer: {
     [rickandmortyApi.reducerPath]: rickandmortyApi.reducer,
     uiState: persistedReducer,
-    selectedItems: selectedItemsReducer,
+    selectedCards: selectedCardsReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

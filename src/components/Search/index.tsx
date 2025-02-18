@@ -2,7 +2,7 @@ import { FC, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 import { setPage, setQuery } from '../../store/features/uiStateSlice';
-import { resetSelected } from '../../store/features/selectedItemsSlice';
+import { resetSelected } from '../../store/features/selectedCardsSlice';
 import { useAppDispatch, useAppSelector } from '../../hooks/hook';
 
 const Search: FC = () => {

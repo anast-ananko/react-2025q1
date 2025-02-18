@@ -3,7 +3,7 @@ import { FC } from 'react';
 import { Character } from '../../types/apiTypes';
 import LinkWithQuery from '../../hoc/linkWithQuery';
 import { useAppDispatch, useAppSelector } from '../../hooks/hook';
-import { toggleSelected } from '../../store/features/selectedItemsSlice';
+import { toggleSelected } from '../../store/features/selectedCardsSlice';
 
 interface CardProps {
   character: Character;
@@ -11,14 +11,12 @@ interface CardProps {
 
 const Card: FC<CardProps> = ({ character }) => {
   const dispatch = useAppDispatch();
-  const { selectedCharacterIds } = useAppSelector(
-    (store) => store.selectedItems
-  );
+  const { selectedCards } = useAppSelector((store) => store.selectedCards);
 
-  const isSelected = selectedCharacterIds.includes(character.id);
+  const isSelected = selectedCards.some((item) => item.id === character.id);
 
   const handleCheckboxChange = (): void => {
-    dispatch(toggleSelected(character.id));
+    dispatch(toggleSelected(character));
   };
 
   return (
