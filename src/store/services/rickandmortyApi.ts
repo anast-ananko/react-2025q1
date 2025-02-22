@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+
 import { Character } from '../../types/apiTypes';
 
 const API_BASE_URL = 'https://rickandmortyapi.com/api';

@@ -32,6 +32,10 @@ describe('Home component', () => {
     vi.clearAllMocks();
   });
 
+  beforeAll(() => {
+    global.URL.createObjectURL = vi.fn(() => 'blob:http://localhost/fake-url');
+  });
+
   it('should display Spinner while loading', () => {
     render(
       <ThemeProvider>

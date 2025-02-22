@@ -16,7 +16,7 @@ const Paginator: FC<PaginatorProps> = ({ pagesNumber, hasNext, hasPrev }) => {
 
   const setSearchParams = useSearchParams()[1];
 
-  const handlePageChange = (newPage: number) => {
+  const handlePageChange = (newPage: number): void => {
     setSearchParams((prev) => {
       const params = new URLSearchParams(prev);
       params.set('page', newPage.toString());

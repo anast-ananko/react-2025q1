@@ -9,7 +9,7 @@ const Search: FC = () => {
   const dispatch = useAppDispatch();
   const { query } = useAppSelector((store) => store.uiState);
 
-  const [searchQuery, setSearchQuery] = useState<string>(query);
+  const [searchQuery, setSearchQuery] = useState<string>(query ?? '');
 
   const setSearchParams = useSearchParams()[1];
 

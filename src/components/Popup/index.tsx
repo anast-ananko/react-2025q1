@@ -12,6 +12,8 @@ const Popup: FC = () => {
     dispatch(resetSelected());
   };
 
+  const { url, fileName } = downloadCsv(selectedCards);
+
   return (
     <>
       {selectedCards.length > 0 && (
@@ -28,7 +30,8 @@ const Popup: FC = () => {
             </button>
             <a
               className="bg-blue-500 text-xl dark:text-gray-800 px-4 py-2 rounded-lg cursor-pointer"
-              href={downloadCsv(selectedCards)}
+              href={url}
+              download={fileName}
             >
               Download
             </a>

@@ -12,7 +12,10 @@ vi.mock('../../hooks/hook', () => ({
 }));
 
 vi.mock('../../utils/downloadCsv', () => ({
-  downloadCsv: vi.fn().mockReturnValue('/mock/path/to/csv'),
+  downloadCsv: vi.fn().mockReturnValue({
+    url: '/mock/path/to/csv',
+    fileName: '1_characters.csv',
+  }),
 }));
 
 describe('Popup component', () => {

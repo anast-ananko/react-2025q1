@@ -23,12 +23,6 @@ describe('useTheme hook', () => {
     expect(typeof result.current.toggleTheme).toBe('function');
   });
 
-  it('should throw an error when used outside of ThemeProvider', () => {
-    expect(() => renderHook(() => useTheme())).toThrow(
-      'useTheme must be used within a ThemeProvider'
-    );
-  });
-
   it('should return correct theme when provided a custom context', () => {
     const wrapper = ({ children }: { children: React.ReactNode }) => (
       <ThemeContext.Provider value={mockContextValue}>

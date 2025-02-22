@@ -1,6 +1,11 @@
 import { Character } from '../types/apiTypes';
 
-export const downloadCsv = (selectedCards: Character[]) => {
+export const downloadCsv = (
+  selectedCards: Character[]
+): {
+  url: string;
+  fileName: string;
+} => {
   const headers = ['Name', 'Species', 'Status', 'Gender', 'Url'];
   const csvRows = [
     headers.join(','),
@@ -21,6 +26,7 @@ export const downloadCsv = (selectedCards: Character[]) => {
   const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8' });
 
   const url = URL.createObjectURL(blob);
+  const fileName = `${selectedCards.length}_characters.csv`;
 
-  return url;
+  return { url, fileName };
 };
