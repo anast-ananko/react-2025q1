@@ -13,13 +13,16 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: ['./src/setupTests.ts'],
     coverage: {
-      include: ['**/*.tsx'],
+      include: ['src/**/*.{ts,tsx}'],
       exclude: [
         '**/node_modules/**',
         '**/*.test.tsx',
         '**/*.spec.tsx',
-        'src/__tests__/setup.ts',
         'src/App.tsx',
+        '**/*.d.ts',
+        'src/__mocks__/**',
+        '**/types/**',
+        '**/constants/**',
       ],
     },
   },

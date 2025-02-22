@@ -4,7 +4,7 @@ import { Provider } from 'react-redux';
 
 import { store } from './store/index.ts';
 import App from './App.tsx';
-import { ThemeProvider } from './context/ThemeProvider.tsx.tsx';
+import { ThemeProvider } from './context/ThemeProvider.tsx';
 
 import './index.css';
 

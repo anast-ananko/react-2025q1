@@ -8,7 +8,7 @@ import {
 import { useOnClickOutside } from 'usehooks-ts';
 
 import { Spinner } from '../../components';
-import { statusStyles } from '../../utils/styles';
+import { statusStyles } from '../../constants/styles';
 import { useGetCharacterQuery } from '../../store/services/rickandmortyApi';
 
 const DetailedCard: FC = () => {
