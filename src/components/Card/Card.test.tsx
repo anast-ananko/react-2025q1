@@ -1,46 +1,60 @@
-import { render, screen } from '@testing-library/react';
-import { MemoryRouter } from 'react-router';
+import { render, screen, fireEvent } from '@testing-library/react';
+import { vi, type Mock } from 'vitest';
 
-import { Character } from '../../types/apiTypes';
 import Card from '.';
+import { toggleSelected } from '../../store/features/selectedCardsSlice';
+import { useAppDispatch, useAppSelector } from '../../hooks/hook';
+import { mockCharacter } from '../../__mocks__/mockCharacter';
 
-const character: Character = {
-  id: 1,
-  name: 'Rick Sanchez',
-  status: 'Alive',
-  species: 'Human',
-  type: 'Type 1',
-  gender: 'Male',
-  origin: { name: 'Earth', url: '' },
-  location: { name: 'Earth', url: '' },
-  image: 'image1.jpg',
-  episode: ['episode1'],
-  url: 'url1',
-  created: '2022-01-01',
-};
+vi.mock('../../hooks/hook', () => ({
+  useAppDispatch: vi.fn().mockReturnValue(vi.fn()),
+  useAppSelector: vi.fn().mockReturnValue({ selectedCards: [] }),
+}));
+
+vi.mock('../../hoc/linkWithQuery', () => ({
+  default: ({ to, children }: { to: string; children: React.ReactNode }) => (
+    <a href={to}>{children}</a>
+  ),
+}));
 
 describe('Card component', () => {
-  test('renders the correct character data', () => {
-    render(
-      <MemoryRouter>
-        <Card key={character.id} character={character} />
-      </MemoryRouter>
+  it('should render character name and image', () => {
+    render(<Card character={mockCharacter} />);
+
+    expect(screen.getByText('Rick Sanchez')).toBeInTheDocument();
+    expect(screen.getByAltText('Rick Sanchez')).toHaveAttribute(
+      'src',
+      mockCharacter.image
     );
-
-    expect(screen.getByText(character.name)).toBeTruthy();
-
-    const imgElement = screen.getByRole('img', { name: character.name });
-
-    expect(imgElement).toBeTruthy();
   });
 
-  test('navigates to the detailed card page when clicked', async () => {
-    render(
-      <MemoryRouter>
-        <Card key={character.id} character={character} />
-      </MemoryRouter>
-    );
+  it('should dispatch toggleSelected when checkbox is clicked', () => {
+    const dispatchMock = vi.fn();
+    (useAppDispatch as unknown as Mock).mockReturnValue(dispatchMock);
 
-    expect(screen.findByRole('link', { name: /character 1/i })).toBeTruthy();
+    render(<Card character={mockCharacter} />);
+
+    const checkbox = screen.getByRole('checkbox');
+    fireEvent.click(checkbox);
+
+    expect(dispatchMock).toHaveBeenCalledWith(toggleSelected(mockCharacter));
+  });
+
+  it('should check the checkbox if character is selected', () => {
+    (useAppSelector as unknown as Mock).mockReturnValue({
+      selectedCards: [{ id: 1 }],
+    });
+
+    render(<Card character={mockCharacter} />);
+
+    const checkbox = screen.getByRole('checkbox') as HTMLInputElement;
+    expect(checkbox.checked).toBe(true);
+  });
+
+  it('should render the link with correct href', () => {
+    render(<Card character={mockCharacter} />);
+
+    const link = screen.getByRole('link', { name: /more/i });
+    expect(link).toHaveAttribute('href', '/details/1');
   });
 });

@@ -1,38 +1,21 @@
-import { FC, useEffect, useState } from 'react';
+import { FC } from 'react';
 
-import Search from '../Search';
+import { Search } from '../../components';
+import { useTheme } from '../../context/useTheme';
 
-interface HeaderProps {
-  query: string;
-  onQueryChange: (query: string) => void;
-  onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
-}
-
-const Header: FC<HeaderProps> = ({ query, onQueryChange, onSubmit }) => {
-  const [throwError, setThrowError] = useState<boolean>(false);
-
-  const toggleError = (): void => {
-    setThrowError(true);
-  };
-
-  useEffect(() => {
-    if (throwError) {
-      throw new Error('This is a test error!');
-    }
-  }, [throwError]);
+const Header: FC = () => {
+  const { theme, toggleTheme } = useTheme();
 
   return (
-    <div className="bg-white px-4 pb-4 rounded-lg max-w-sm mx-auto">
-      <Search query={query} onQueryChange={onQueryChange} onSubmit={onSubmit} />
+    <div className="px-4 pb-4 rounded-lg max-w-lg mx-auto flex flex-col sm:flex-row items-center justify-between space-y-4 sm:space-y-0 sm:space-x-4">
+      <Search />
 
-      <div className="flex justify-center mt-4">
-        <button
-          onClick={toggleError}
-          className="py-2 px-4 bg-red-600 text-white rounded-lg shadow-md hover:bg-red-700 focus:outline-none focus:ring-red-600 text-sm font-semibold transition duration-300 cursor-pointer"
-        >
-          Throw Error
-        </button>
-      </div>
+      <button
+        onClick={toggleTheme}
+        className="w-full sm:w-auto py-2 px-4 text-xl rounded-lg transition-colors bg-blue-500 dark:bg-yellow-400 cursor-pointer"
+      >
+        {theme === 'light' ? '🌙 Dark' : '🌞 Light'}
+      </button>
     </div>
   );
 };

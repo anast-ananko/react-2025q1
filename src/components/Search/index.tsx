@@ -1,14 +1,41 @@
-import { FC } from 'react';
+import { FC, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 
-interface SearchProps {
-  query: string;
-  onQueryChange: (query: string) => void;
-  onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
-}
+import { setPage, setQuery } from '../../store/features/uiStateSlice';
+import { resetSelected } from '../../store/features/selectedCardsSlice';
+import { useAppDispatch, useAppSelector } from '../../hooks/hook';
 
-const Search: FC<SearchProps> = ({ query, onQueryChange, onSubmit }) => {
-  const handleQuery = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    onQueryChange(e.target.value);
+const Search: FC = () => {
+  const dispatch = useAppDispatch();
+  const { query } = useAppSelector((store) => store.uiState);
+
+  const [searchQuery, setSearchQuery] = useState<string>(query ?? '');
+
+  const setSearchParams = useSearchParams()[1];
+
+  const onSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
+    e.preventDefault();
+
+    setSearchParams((prev) => {
+      const params = new URLSearchParams(prev);
+      params.set('page', '1');
+
+      if (searchQuery.trim()) {
+        params.set('query', searchQuery.trim());
+      } else {
+        params.delete('query');
+      }
+
+      return params;
+    });
+
+    dispatch(setQuery(searchQuery));
+    dispatch(setPage(1));
+    dispatch(resetSelected());
+  };
+
+  const onChangeQuery = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    setSearchQuery(event.target.value);
   };
 
   return (
@@ -16,15 +43,15 @@ const Search: FC<SearchProps> = ({ query, onQueryChange, onSubmit }) => {
       <div className="flex-1">
         <input
           type="text"
-          value={query}
-          onChange={handleQuery}
+          value={searchQuery}
+          onChange={onChangeQuery}
           placeholder="Search..."
-          className="w-full p-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-0 focus:border-green-400 text-sm placeholder-gray-400"
+          className="dark:text-white w-full p-2 border border-gray-300 text-xl rounded-lg shadow-sm focus:outline-none focus:ring-0 focus:border-green-400 text-sm placeholder-gray-400"
         />
       </div>
       <button
         type="submit"
-        className="py-2 px-4 bg-green-600 text-white rounded-lg shadow-md hover:bg-green-700 focus:outline-none focus:ring-green-600 text-sm font-semibold transition duration-300 cursor-pointer"
+        className="py-2 px-4 bg-green-600 text-white text-xl rounded-lg shadow-md dark:text-gray-800 hover:bg-green-800 focus:outline-none focus:ring-green-600 text-sm font-semibold transition duration-300 cursor-pointer"
       >
         Search
       </button>

@@ -1,93 +1,68 @@
-import { FC, Suspense, useEffect, useRef, useState } from 'react';
-import {
-  Await,
-  Outlet,
-  useLoaderData,
-  useNavigate,
-  useParams,
-  useSearchParams,
-} from 'react-router-dom';
+import { FC, useEffect } from 'react';
+import { Outlet } from 'react-router-dom';
 
-import { useSearchQuery } from '../../hooks/useLocalStorage';
-import Header from '../../components/Header';
-import CardList from '../../components/CardList';
-import Spinner from '../../components/Spinner';
-import Paginator from '../../components/Paginator';
-import { CharactersLoader } from '../../loaders/charactersLoader';
-import { updateSearchParams } from '../../utils/updateSearchParams';
+import { CardList, Header, Paginator, Popup, Spinner } from '../../components';
+import { useGetAllCharactersQuery } from '../../store/services/rickandmortyApi';
+import { useAppDispatch, useAppSelector } from '../../hooks/hook';
+import { setCurrentCards } from '../../store/features/currentCardsSlice';
 
 const Home: FC = () => {
-  const { data } = useLoaderData() as CharactersLoader;
-  const [query, inputValue, setInputValue, setQueryOnSubmit] = useSearchQuery();
-  const { id } = useParams<{ id: string }>();
-  const [isDetailsVisible, setIsDetailsVisible] = useState(!!id);
-  const detailsRef = useRef<HTMLDivElement>(null);
+  const dispatch = useAppDispatch();
+  const { page, query } = useAppSelector((store) => store.uiState);
 
-  const [searchParams] = useSearchParams();
-  const navigate = useNavigate();
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
-    e.preventDefault();
-
-    const trimmedQuery = inputValue.trim();
-    if (trimmedQuery === query) return;
-
-    setQueryOnSubmit();
-  };
+  const {
+    data = { characters: [], pagesNumber: 0, next: null, prev: null },
+    error,
+    isSuccess,
+    isLoading,
+    isFetching,
+  } = useGetAllCharactersQuery({ page, name: query });
+  const { characters, pagesNumber, next, prev } = data;
 
   useEffect(() => {
-    if (id) {
-      setIsDetailsVisible(true);
-    }
-  }, [id]);
-
-  const handleClickOutside = (
-    event: React.MouseEvent<HTMLDivElement>
-  ): void => {
-    const target = event.target as HTMLElement;
-
-    if (
-      detailsRef.current &&
-      target &&
-      !detailsRef.current.contains(target) &&
-      !target.closest('.card')
-    ) {
-      setIsDetailsVisible(false);
-      updateSearchParams(searchParams, navigate);
-    }
-  };
+    dispatch(setCurrentCards(characters));
+  }, [characters, dispatch]);
 
   return (
-    <div className="flex" onClick={handleClickOutside}>
-      <div className="w-2/3 px-4 py-8">
-        <Header
-          query={inputValue}
-          onQueryChange={setInputValue}
-          onSubmit={handleSubmit}
-        />
-        <Suspense fallback={<Spinner />}>
-          <Await resolve={data}>
-            {(resolvedData) => {
-              const { results, info } = resolvedData;
+    <div className="flex">
+      <div className="w-2/3 px-4 py-8 md:mb-10 mb-32">
+        <Header />
 
-              return (
-                <>
-                  <CardList characters={results} />
-                  {results.length > 0 && (
-                    <Paginator hasNext={!!info?.next} hasPrev={!!info?.prev} />
-                  )}
-                </>
-              );
-            }}
-          </Await>
-        </Suspense>
+        <>
+          {error && 'status' in error && error.status === 404 && (
+            <div className="mt-16 text-xl dark:text-white font-bold text-center">
+              Not found
+            </div>
+          )}
+          {error && !('status' in error) && (
+            <div className="mt-16 text-xl dark:text-white font-semibold text-center">
+              {error?.message}
+            </div>
+          )}
+        </>
+
+        {!error && !isLoading && !isFetching && (
+          <Paginator
+            pagesNumber={pagesNumber}
+            hasNext={!!next}
+            hasPrev={!!prev}
+          />
+        )}
+
+        {(isLoading || isFetching) && (
+          <div>
+            <Spinner />
+          </div>
+        )}
+
+        {isSuccess && !isLoading && !isFetching && <CardList />}
       </div>
 
-      {isDetailsVisible && (
-        <div ref={detailsRef} className="w-1/3 border-l">
-          <Outlet />
-        </div>
-      )}
+      <div className="sm:w-[100px] md:w-1/2 lg:w-1/3">
+        <Outlet />
+      </div>
+
+      <Popup />
     </div>
   );
 };

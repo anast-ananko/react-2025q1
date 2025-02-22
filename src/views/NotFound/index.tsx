@@ -4,12 +4,12 @@ import { useNavigate } from 'react-router-dom';
 const NotFound: FC = () => {
   const navigate = useNavigate();
 
-  const handleGoHome = () => {
+  const handleGoHome = (): void => {
     navigate('/');
   };
 
   return (
-    <div className="flex flex-col items-center justify-center text-xl font-semibold text-gray-500">
+    <div className="flex flex-col pt-20 items-center justify-center text-xl font-semibold text-gray-500">
       <p>Not Found</p>
       <button
         onClick={handleGoHome}
