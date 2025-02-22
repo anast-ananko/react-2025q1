@@ -17,6 +17,7 @@ vi.mock('../../utils/downloadCsv', () => ({
 
 describe('Popup component', () => {
   const mockDispatch = vi.fn();
+  const selectedMock = [{ id: 1, name: 'Rick', image: 'rick.png' }];
 
   beforeEach(() => {
     (useAppDispatch as unknown as Mock).mockReturnValue(mockDispatch);
@@ -29,7 +30,6 @@ describe('Popup component', () => {
   });
 
   it('should render when cards are selected', () => {
-    const selectedMock = [{ id: 1, name: 'Rick', image: 'rick.png' }];
     (useAppSelector as unknown as Mock).mockReturnValue({
       selectedCards: selectedMock,
     });
@@ -42,7 +42,6 @@ describe('Popup component', () => {
   });
 
   it('should dispatch resetSelected when "Unselect all" is clicked', () => {
-    const selectedMock = [{ id: 1, name: 'Rick', image: 'rick.png' }];
     (useAppSelector as unknown as Mock).mockReturnValue({
       selectedCards: selectedMock,
     });
@@ -56,7 +55,6 @@ describe('Popup component', () => {
   });
 
   it('should call downloadCsv and set correct href for download link', () => {
-    const selectedMock = [{ id: 1, name: 'Morty', image: 'morty.png' }];
     (useAppSelector as unknown as Mock).mockReturnValue({
       selectedCards: selectedMock,
     });

@@ -30,7 +30,6 @@ describe('Card component', () => {
 
   it('should dispatch toggleSelected when checkbox is clicked', () => {
     const dispatchMock = vi.fn();
-
     (useAppDispatch as unknown as Mock).mockReturnValue(dispatchMock);
 
     render(<Card character={mockCharacter} />);

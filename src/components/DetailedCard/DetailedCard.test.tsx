@@ -67,7 +67,6 @@ describe('DetailedCard component', () => {
   it('should navigate on close button click', () => {
     const navigateMock = vi.fn();
     (useNavigate as unknown as Mock).mockReturnValue(navigateMock);
-
     (useGetCharacterQuery as Mock).mockReturnValue({
       data: mockCharacter,
       isSuccess: true,
@@ -85,7 +84,6 @@ describe('DetailedCard component', () => {
   it('should navigate when clicked outside the component', () => {
     const navigateMock = vi.fn();
     (useNavigate as unknown as Mock).mockReturnValue(navigateMock);
-
     (useGetCharacterQuery as Mock).mockReturnValue({
       data: mockCharacter,
       isSuccess: true,

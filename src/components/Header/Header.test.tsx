@@ -28,6 +28,7 @@ describe('Header component', () => {
       theme: 'light',
       toggleTheme: toggleThemeMock,
     });
+
     render(<Header />);
 
     const buttonDark = screen.getByText('🌙 Dark');

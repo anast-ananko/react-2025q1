@@ -4,7 +4,7 @@ import { MemoryRouter } from 'react-router-dom';
 import Layout from '.';
 
 describe('Layout', () => {
-  it('should render without crashing', () => {
+  it('should render the layout', () => {
     render(
       <MemoryRouter>
         <Layout />

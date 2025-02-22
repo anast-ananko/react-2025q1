@@ -14,6 +14,7 @@ describe('ErrorBoundary', () => {
         <div>Working component</div>
       </ErrorBoundary>
     );
+
     expect(screen.getByText(/working component/i)).toBeInTheDocument();
   });
 

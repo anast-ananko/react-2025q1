@@ -23,7 +23,7 @@ const TestComponent = () => {
 describe('ThemeProvider', () => {
   beforeEach(() => {
     localStorage.clear();
-    vi.restoreAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should default to light theme if no theme is in localStorage', () => {
