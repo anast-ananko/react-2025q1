@@ -34,7 +34,7 @@ const Card: FC<CardProps> = ({ character }) => {
         <img
           src={character.image}
           alt={character.name}
-          className="w-full h-40 object-contain rounded-t-lg"
+          className="overflow-hidden h-40 object-fill rounded-t-lg"
         />
       </div>
       <div className="mt-4">

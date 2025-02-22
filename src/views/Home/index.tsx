@@ -25,7 +25,7 @@ const Home: FC = () => {
 
   return (
     <div className="flex">
-      <div className="w-2/3 px-4 py-8 mb-10">
+      <div className="w-2/3 px-4 py-8 md:mb-10 mb-32">
         <Header />
 
         <>

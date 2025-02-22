@@ -17,19 +17,19 @@ const Popup: FC = () => {
   return (
     <>
       {selectedCards.length > 0 && (
-        <div className="fixed bottom-0 left-0 w-full px-24 bg-green-300 dark:bg-green-600 text-white p-4 flex justify-between items-center">
-          <span className="text-black text-xl font-bold">
+        <div className="fixed bottom-0 left-0 w-full px-4 sm:px-10 lg:px-24 bg-green-300 dark:bg-green-600 text-white p-4 flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0 sm:space-x-4">
+          <span className="text-black text-lg sm:text-xl font-bold text-center sm:text-left">
             {selectedCards.length} item(s) selected
           </span>
-          <div>
+          <div className="flex flex-col sm:flex-row w-full sm:w-auto justify-center sm:justify-end space-y-2 sm:space-y-0 sm:space-x-4">
             <button
-              className="mr-4 bg-red-500 text-xl dark:text-gray-800 px-4 py-2 rounded-lg cursor-pointer"
+              className="w-full sm:w-auto bg-red-500 text-lg sm:text-xl dark:text-gray-800 px-4 py-2 rounded-lg cursor-pointer hover:bg-red-600 transition"
               onClick={handleUnselectAll}
             >
               Unselect all
             </button>
             <a
-              className="bg-blue-500 text-xl dark:text-gray-800 px-4 py-2 rounded-lg cursor-pointer"
+              className="w-full sm:w-auto bg-blue-500 text-lg sm:text-xl dark:text-gray-800 px-4 py-2 rounded-lg cursor-pointer hover:bg-blue-600 transition text-center"
               href={url}
               download={fileName}
             >
